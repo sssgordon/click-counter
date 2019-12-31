@@ -4,22 +4,20 @@ import "./App.css";
 class App extends Component {
     state = {
         counter: 0,
-        error: null
+        error: false
     };
     render() {
         const { counter, error } = this.state;
-        const errorDisplay = error && (
-            <h2 style={{ color: "red" }} data-test="error-display">
-                The counter doesn't go below zero
-            </h2>
-        );
+        const errorClass = error ? "" : "hidden";
 
         return (
-            <div data-test="component-app">
+            <div data-test="component-app" className="App">
                 <h1 data-test="counter-display">
                     The counter is currently {this.state.counter}
                 </h1>
-                {errorDisplay}
+                <h3 data-test="error-message" className={`error ${errorClass}`}>
+                    The counter doesn't go below 0
+                </h3>
                 <button
                     data-test="increment-button"
                     onClick={() => {
@@ -33,7 +31,8 @@ class App extends Component {
                     onClick={() => {
                         if (counter > 0) {
                             this.setState({ counter: counter - 1 });
-                        } else {
+                        }
+                        if (counter === 0) {
                             this.setState({ error: true });
                         }
                     }}
