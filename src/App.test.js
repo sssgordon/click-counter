@@ -15,8 +15,8 @@ Enzyme.configure({ adapter: new EnzymeAdapter() });
  */
 
 const setup = (props = {}, state = null) => {
+    // shallow wrapper renders components in a virtual dom for testing
     const wrapper = shallow(<App {...props} />);
-    // shallow wrapper is a virtual dom for testing
     if (state) {
         wrapper.setState(state);
     }
@@ -31,6 +31,7 @@ const setup = (props = {}, state = null) => {
  */
 
 const findByTestAttr = (wrapper, val) => {
+    // .find render DOM elements
     return wrapper.find(`[data-test="${val}"]`);
 };
 
@@ -44,8 +45,14 @@ test("renders without error", () => {
 
 test("renders increment button", () => {
     const wrapper = setup();
-    const button = findByTestAttr(wrapper, "increment-button");
-    expect(button.length).toBe(1);
+    const incrementButton = findByTestAttr(wrapper, "increment-button");
+    expect(incrementButton.length).toBe(1);
+});
+
+test("renders decrement button", () => {
+    const wrapper = setup();
+    const decrementButton = findByTestAttr(wrapper, "decrement-button");
+    expect(decrementButton.length).toBe(1);
 });
 
 test("renders counter display", () => {
@@ -67,12 +74,21 @@ test("clicking button increments counter display", () => {
     const wrapper = setup(null, { counter });
 
     // find button and click
-    const button = findByTestAttr(wrapper, "increment-button");
+    const incrementButton = findByTestAttr(wrapper, "increment-button");
     // simulate click event on node element
-    button.simulate("click");
+    incrementButton.simulate("click");
 
     // find display and test value
     const counterDisplay = findByTestAttr(wrapper, "counter-display");
     // .text() returns a string of the rendered text of the node element
     expect(counterDisplay.text()).toContain(counter + 1);
+});
+
+test("clicking button decrements counter display", () => {
+    const counter = 6;
+    const wrapper = setup(null, { counter });
+    const decrementButton = findByTestAttr(wrapper, "decrement-button");
+    decrementButton.simulate("click");
+    const counterDisplay = findByTestAttr(wrapper, "counter-display");
+    expect(counterDisplay.text()).toContain(counter - 1);
 });
