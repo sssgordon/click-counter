@@ -92,3 +92,30 @@ test("clicking button decrements counter display", () => {
     const counterDisplay = findByTestAttr(wrapper, "counter-display");
     expect(counterDisplay.text()).toContain(counter - 1);
 });
+
+test("counter display does not go below zero", () => {
+    const counter = 0;
+    const wrapper = setup(null, { counter });
+    const decrementButton = findByTestAttr(wrapper, "decrement-button");
+    decrementButton.simulate("click");
+    const counterDisplay = findByTestAttr(wrapper, "counter-display");
+    expect(counterDisplay.text()).toContain(0);
+});
+
+test("display error message saying the counter can't go below zero", () => {
+    const counter = 0;
+    const wrapper = setup(null, { counter });
+    const decrementButton = findByTestAttr(wrapper, "decrement-button");
+    decrementButton.simulate("click");
+    const errorDisplay = findByTestAttr(wrapper, "error-display");
+    expect(errorDisplay.length).toBe(1);
+});
+
+test("If error is showing and increment button is clicked, clear the error", () => {
+    const wrapper = setup();
+    const incrementButton = findByTestAttr(wrapper, "increment-button");
+    incrementButton.simulate("click");
+
+    const errorDisplay = findByTestAttr(wrapper, "error-display");
+    expect(errorDisplay.length).toBe(0);
+});
